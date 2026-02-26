@@ -69,7 +69,10 @@ We use Google Colab to take advantage of free T4 GPUs to radically speed up the 
 ---
 
 ## 💾 Using the Trained Model
-After training, the notebook saves the custom model to `./finetuned_wallet_blip`. Download this folder to your local machine.
+**📥 Download the pre-trained custom model weights here:** 
+[Google Drive Link - finetuned_wallet_blip](https://drive.google.com/drive/folders/1EZJRpYl-GWtAaqT_UldQHeiv46XulIAT?usp=sharing)
+
+After downloading, extract the folder so it is located at `./finetuned_wallet_blip` relative to your script.
 
 You can now use your custom AI locally with HuggingFace `transformers`:
 
