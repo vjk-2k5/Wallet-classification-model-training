@@ -21,7 +21,7 @@ from tqdm import tqdm
 DATA_DIR = "./"  # Directory containing 'wallet' folder and 'wallet_captions.json'
 JSON_FILE = os.path.join(DATA_DIR, "wallet_captions.json")
 MODEL_ID = "Salesforce/blip-image-captioning-base"
-EPOCHS = 10
+EPOCHS = 2
 BATCH_SIZE = 4
 LEARNING_RATE = 5e-5
 SAVE_PATH = "./finetuned_wallet_blip"
