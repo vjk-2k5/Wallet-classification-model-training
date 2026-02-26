@@ -19,5 +19,10 @@ __pycache__/
 *.swp
 *.swo
 
+# Ignore massive AI Model weights and zips
+*.zip
+finetuned_wallet_blip/
+
+
 # Project specific
 # wallet_captions.json  # (Uncomment this if you don't want to commit the generated dataset, but usually you do want to keep it!)
