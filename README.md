@@ -1,5 +1,5 @@
 # Wallet Manufacturing BOM AI 👛
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14osf7-Pu7TtgEu9-BU3M_RwwoPfdJb8P?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1IdGXmmGVs7ClcAKC-Ed9eOsKUpyzay1k?usp=sharing)
 
 This repository contains an end-to-end pipeline to automate the creation of **Manufacturing Bill of Materials (BOM)** from wallet product images. It uses model distillation (Teacher → Student) to identify technical construction details like stitching, edge finishing, and hardware components.
 
