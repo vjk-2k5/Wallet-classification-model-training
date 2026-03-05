@@ -28,15 +28,17 @@ Transforming visual product designs into actionable engineering data. Instead of
 ## 🚀 Phase 1: BOM Dataset Generation
 We use **Gemini 3 Flash** as a high-fidelity "Teacher" to audit wallet images for technical features that are often missed by standard captioning models.
 
-**Extracted BOM Fields:**
+**Extracted BOM Fields (10 Construction-Only Fields):**
 1. Wallet Type (Bifold, Trifold, etc.)
-2. Primary Material (Leather, Canvas, etc.)
-3. Hardware (Zippers, Snaps, Badges)
-4. Closure Type
-5. Stitching Type & Color
-6. Edge Finishing (Painted, Burnished, Folded)
-7. Branding Method
-8. Size Category
+2. Color
+3. Surface Pattern / Texture
+4. Primary Material (Leather, Canvas, etc.)
+5. Hardware Components (Zippers, Snaps, Badges)
+6. Closure Type
+7. Stitching Type
+8. Stitch Color
+9. Edge Finishing (Painted, Burnished, Folded)
+10. Size Category
 
 ---
 

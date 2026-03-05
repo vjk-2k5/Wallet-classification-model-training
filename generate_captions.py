@@ -41,10 +41,6 @@ class WalletBOM(BaseModel):
     stitch_color: str = Field(description="Color of the stitching thread visible on exterior, e.g. 'beige', 'matching', 'contrast white', or 'not-visible'")
     edge_finish: str = Field(description="Edge finishing visible: painted, burnished, raw, folded, bound, or not-visible")
 
-    # Branding (visible from exterior)
-    brand: str = Field(description="Brand name if identifiable from logo/text on exterior, otherwise 'unbranded'")
-    branding_method: str = Field(description="How the brand is applied on exterior: embossed, debossed, heat-stamp, printed, metal-badge, stitched-label, engraved, none")
-
     # Size Estimate
     size_category: str = Field(description="Estimated size category based on proportions: compact, standard, large, oversized")
 
@@ -62,15 +58,17 @@ def process_image(img_path):
             img = Image.open(img_path)
             prompt = (
                 "You are a manufacturing engineer analyzing a wallet product image. "
-                "Your job is to extract a complete Bill of Materials (BOM) from the image. "
+                "Your job is to extract a Bill of Materials (BOM) for manufacturing — focus ONLY on construction details. "
                 "Look carefully at the wallet and identify:\n"
-                "- The type of wallet and its core materials (exterior and lining)\n"
-                "- All design components: card slots, bill compartments, coin pockets, ID windows\n"
-                "- All hardware: zippers, snaps, rivets, clasps, D-rings, metal badges\n"
-                "- Closure mechanism and stitching details (type, color, edge finish)\n"
-                "- Branding method and brand name if visible\n"
-                "- Color, pattern, and estimated size\n\n"
-                "Be precise and specific. If something is not visible, use 'not-visible' or reasonable defaults. "
+                "- The type of wallet (bifold, trifold, zip-around, cardholder, etc.)\n"
+                "- Exterior material (leather type, synthetic, canvas, etc.)\n"
+                "- Color and surface pattern/texture\n"
+                "- All hardware: zippers, snaps, rivets, clasps, D-rings, buckles\n"
+                "- Closure mechanism\n"
+                "- Stitching details (type, thread color, edge finish)\n"
+                "- Estimated size category\n\n"
+                "Do NOT identify brand names. Focus purely on materials and construction processes. "
+                "If something is not visible, use 'not-visible' or reasonable defaults. "
                 "Return the structured JSON."
             )
             
@@ -127,7 +125,7 @@ def main():
                     existing = json.loads(content)
                     # Only reuse entries that have the new BOM fields
                     for key, val in existing.items():
-                        if "primary_material" in val and "card_slots" in val:
+                        if "primary_material" in val and "stitching_type" in val and "brand" not in val:
                             results[key] = val
                     if results:
                         print(f"Loaded {len(results)} existing BOM results from {output_file}.")
