@@ -1,80 +1,58 @@
-# Wallet Classification & Description Model Training 👛
+# Wallet Manufacturing BOM AI 👛
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14osf7-Pu7TtgEu9-BU3M_RwwoPfdJb8P?usp=sharing)
 
-This repository contains the complete pipeline for generating a highly structured, custom image captioning dataset and fine-tuning a Vision-Language Model (Salesforce BLIP) to accurately describe wallet images.
+This repository contains an end-to-end pipeline to automate the creation of **Manufacturing Bill of Materials (BOM)** from wallet product images. It uses model distillation (Gemini to BLIP) to identify technical construction details like stitching, edge finishing, and hardware components.
 
-## Project Overview
+## 🎯 The Core Mission
+Transforming visual product designs into actionable engineering data. Instead of just describing a wallet, this AI generates a structured "recipe" that a factory can use to initiate the manufacturing process.
 
-The goal of this project is to take raw images of wallets and train an AI to output precise, structured descriptions in a very specific format:
-> `a [pattern] [color] [material_type] [type_of_wallet] by [brand]`
+### **BOM Output Example:**
+| COMPONENT | MANUFACTURING SPECIFICATION |
+| :--- | :--- |
+| **Material (Primary)** | Textured Brown Leather |
+| **Product Architecture** | Compact Cardholder |
+| **Closure Mechanism** | Fold Closure |
+| **Assembly Process** | Machine-Stitched |
+| **Edge Specification** | Folded Edges |
 
-*(e.g., "a solid brown leather bifold wallet by fossil" or "a solid black synthetic zip-around by unbranded")*
-
-To achieve this, the pipeline is divided into two parts:
-1. **Model Distillation & Dataset Generation:** Using the **Gemini 3 Flash** model as a high-fidelity "Teacher" to analyze images and automatically extract structured JSON Bill of Materials (BOM) data.
-2. **Student Model Training:** Fine-tuning the lightweight `Salesforce/blip-image-captioning-base` (Student) on this distilled knowledge to achieve high-performance wallet description generation.
 ---
 
 ## 📂 Repository Structure
-
-*   `wallet/` - Directory containing the raw images of the wallets (not included in the repo by default).
-*   `wallet_captions.json` - The generated dataset mapping image paths to their structured attributes.
-*   `dataset.zip` - A compressed archive of the images and JSON, ready for Colab upload.
-*   `generate_captions.py` - Script that uses the Gemini GenAI API with parallel processing to build the dataset.
-*   `train_blip_on_colab.py` - A standalone Python script containing the PyTorch dataset loaders and training loop.
-*   `colab_trainer.ipynb` - The primary Google Colab Notebook used to actually run the fine-tuning on a T4 GPU.
+*   `wallet/` - Dataset of 476 wallet product images.
+*   `wallet_captions.json` - Distilled 12-field manufacturing ground-truth (BOM).
+*   `generate_captions.py` - Script using Gemini 3 Flash to extract BOM data from raw images.
+*   `colab_trainer.ipynb` - The training notebook for fine-tuning the BLIP student model.
 
 ---
 
-## 🚀 Phase 1: Generating the Dataset (`generate_captions.py`)
+## 🚀 Phase 1: BOM Dataset Generation
+We use **Gemini 3 Flash** as a high-fidelity "Teacher" to audit wallet images for technical features that are often missed by standard captioning models.
 
-Takes local images and generates a highly accurate JSON ground-truth dataset.
-
-**Features:**
-*   Uses `gemini-3-flash-preview` to look at images and return rigid JSON using Pydantic schemas.
-*   Multithreaded with dynamic API Rate-Limit handling (infinite retry with exponential backoff on 429/503 errors).
-*   Incremental appending saves state so no data is lost if the process fails.
-
-**How to run:**
-1. Put your images in the `wallet/` directory.
-2. Create a `.env` file and add your Google API key: `GEMINI_API_KEY=your_key_here`
-3. Run the script:
-   ```bash
-   python generate_captions.py
-   ```
-4. This outputs `wallet_captions.json` and a zipped version `dataset.zip`.
+**Extracted BOM Fields:**
+1. Wallet Type (Bifold, Trifold, etc.)
+2. Primary Material (Leather, Canvas, etc.)
+3. Hardware (Zippers, Snaps, Badges)
+4. Closure Type
+5. Stitching Type & Color
+6. Edge Finishing (Painted, Burnished, Folded)
+7. Branding Method
+8. Size Category
 
 ---
 
-## 🧠 Phase 2: Fine-Tuning BLIP (`colab_trainer.ipynb`)
+## 🧠 Phase 2: Student Model Training 
+We fine-tune `Salesforce/blip-image-captioning-base` on the distilled BOM data.
 
-We use Google Colab to take advantage of free T4 GPUs to radically speed up the training of the BLIP Base model. 
-
-**Features:**
-*   Automatically resolves Windows-to-Linux pathing issues.
-*   Safely formats the JSON attributes into a natural language sentence.
-*   Loss tracking and automatic visual graphing.
-*   Built-in "Anti-Cheat" unseen image fetching to test for overfitting at the end.
-
-**How to run:**
-1. Open [Google Colab](https://colab.research.google.com/).
-2. Upload `colab_trainer.ipynb`.
-3. Change Runtime to **T4 GPU** (`Runtime > Change runtime type`).
-4. Upload `dataset.zip` into the Colab file explorer on the left.
-5. Click **Run All**.
-
-*(Note: Optimal training time for ~250 images is **~3 Epochs** to avoid overfitting. The notebook takes about 5 minutes to run.)*
+**Training Stats:**
+*   **Dataset:** 476 Images / 12-field BOM Captions.
+*   **Optimizer:** AdamW (5e-5 LR).
+*   **Training Time:** ~2 Epochs (Detected as the optimal "sweet spot" to learn technical features without overfitting/memorizing).
 
 ---
 
 ## 💾 Using the Trained Model
-**📥 Download the pre-trained custom model weights here:** 
-[Google Drive Link - finetuned_wallet_blip](https://drive.google.com/drive/folders/1EZJRpYl-GWtAaqT_UldQHeiv46XulIAT?usp=sharing)
-
-After downloading, extract the folder so it is located at `./finetuned_wallet_blip` relative to your script.
-
-You can now use your custom AI locally with HuggingFace `transformers`:
-
+1.  **Download weights:** [Google Drive - finetuned_bom_model_final.zip](https://drive.google.com/drive/folders/1EZJRpYl-GWtAaqT_UldQHeiv46XulIAT?usp=sharing)
+2.  **Run locally:**
 ```python
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from PIL import Image
@@ -82,10 +60,8 @@ from PIL import Image
 processor = BlipProcessor.from_pretrained("./finetuned_wallet_blip")
 model = BlipForConditionalGeneration.from_pretrained("./finetuned_wallet_blip")
 
-image = Image.open("any_new_wallet.jpg").convert("RGB")
+image = Image.open("sample.jpg").convert("RGB")
 inputs = processor(image, return_tensors="pt")
-
-out = model.generate(**inputs, max_new_tokens=50)
+out = model.generate(**inputs, max_new_tokens=100)
 print(processor.decode(out[0], skip_special_tokens=True))
-# Output: "a solid red leather trifold by unbranded"
 ```
