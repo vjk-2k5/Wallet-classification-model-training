@@ -45,10 +45,11 @@ We use **Gemini 3 Flash** as a high-fidelity "Teacher" to audit wallet images fo
 ## 🧠 Phase 2: Student Model Training 
 We fine-tune `Salesforce/blip-image-captioning-base` on the distilled BOM data.
 
-**Training Stats:**
-*   **Dataset:** 476 Images / 12-field BOM Captions.
-*   **Optimizer:** AdamW (5e-5 LR).
-*   **Training Time:** ~2 Epochs (Detected as the optimal "sweet spot" to learn technical features without overfitting/memorizing).
+**Training Stats (Tuned):**
+*   **Dataset:** 476 Images / 10-field BOM Captions (no brand data).
+*   **Optimizer:** AdamW (LR: 2e-5, Weight Decay: 0.01).
+*   **Batch Size:** 8.
+*   **Training:** 3 Epochs (tuned for better generalization — lower LR + weight decay prevents memorization).
 
 ---
 
