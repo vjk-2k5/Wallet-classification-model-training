@@ -11,7 +11,7 @@ The goal of this project is to take raw images of wallets and train an AI to out
 *(e.g., "a solid brown leather bifold wallet by fossil" or "a solid black synthetic zip-around by unbranded")*
 
 To achieve this, the pipeline is divided into two parts:
-1. **Model Distillation & Dataset Generation:** Using the **Gemma 3 27B** model as a high-fidelity "Teacher" to analyze images and automatically extract structured JSON Bill of Materials (BOM) data.
+1. **Model Distillation & Dataset Generation:** Using the **Gemini 3 Flash** model as a high-fidelity "Teacher" to analyze images and automatically extract structured JSON Bill of Materials (BOM) data.
 2. **Student Model Training:** Fine-tuning the lightweight `Salesforce/blip-image-captioning-base` (Student) on this distilled knowledge to achieve high-performance wallet description generation.
 ---
 

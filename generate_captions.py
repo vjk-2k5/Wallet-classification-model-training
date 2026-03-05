@@ -15,7 +15,7 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key=api_key)
-MODEL_NAME = "gemma-3-27b-it"
+MODEL_NAME = "gemini-3-flash-preview"
 
 # ───────────────────────────────────────────────────────────────
 # Expanded Pydantic Schema: Bill of Materials for Manufacturing
